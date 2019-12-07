@@ -86,44 +86,9 @@ This time, when the TEST diagnostic program runs its input instruction to get th
 
 What is the diagnostic code for system ID 5?
 """
-f = open('d05.in', 'r')
-values = list(map(int, f.read().strip().split(',')))
 
-def runIntCode(values, input):
-  output = []
-  i = 0
-  while True:
-    instruction = values[i] % 100
-    mode = values[i] // 100
-    modes = (mode % 10, (mode // 10) % 10, mode // 100)
-    if instruction == 99:
-      break
-    elif instruction == 1 or instruction == 2:
-      a = values[values[i+1]] if modes[0] == 0 else values[i+1]
-      b = values[values[i+2]] if modes[1] == 0 else values[i+2]
-      values[values[i+3]] = a+b if instruction == 1 else a*b
-      i += 4
-    elif instruction == 3:
-      values[values[i+1]] = input.pop()
-      i += 2
-    elif instruction == 4:
-      a = values[values[i+1]] if modes[0] == 0 else values[i+1]
-      output.append(a)
-      i += 2
-    elif instruction == 5 or instruction == 6:
-      a = values[values[i+1]] if modes[0] == 0 else values[i+1]
-      b = values[values[i+2]] if modes[1] == 0 else values[i+2]
-      if (a == 0) == (instruction == 6):
-        i = b
-      else:
-        i += 3
-    elif instruction == 7 or instruction == 8:
-      a = values[values[i+1]] if modes[0] == 0 else values[i+1]
-      b = values[values[i+2]] if modes[1] == 0 else values[i+2]
-      values[values[i+3]] = 1 if (instruction == 7 and a < b) or (instruction == 8 and a == b) else 0
-      i += 4
-  return output
+from subprocess import run, PIPE
 
-
-print('Part 1: ', ' ' . join(map(str, runIntCode(values.copy(), [1]))))
-print('Part 2: ', ' ' . join(map(str, runIntCode(values.copy(), [5]))))
+values = open('d05.in', 'r').read()
+print('Part 1: ', run('python3 d05-intCode.py'.split(), text=True, input=values+'1', stdout=PIPE).stdout.strip())
+print('Part 2: ', run('python3 d05-intCode.py'.split(), text=True, input=values+'5', stdout=PIPE).stdout.strip())
