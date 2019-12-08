@@ -11,22 +11,22 @@ import (
 
 var programCode, input string
 var maxPhase string
-var maxThruster int = 0
+var maxThruster int
 
-func perm(a string, i int) {
+func perm(a string, f func(phase string) string, i int) {
 	if i > len(a) {
-		result, _ := strconv.Atoi(runAcs(programCode, string(a), input))
+		result, _ := strconv.Atoi(f(string(a)))
 		if result > maxThruster {
 			maxPhase = string(a)
 			maxThruster = result
 		}
 		return
 	}
-	perm(a, i+1)
+	perm(a, f, i+1)
 	b := []rune(a)
 	for j := i + 1; j < len(b); j++ {
 		b[i], b[j] = b[j], b[i]
-		perm(string(b), i+1)
+		perm(string(b), f, i+1)
 		b[i], b[j] = b[j], b[i]
 	}
 }
@@ -40,12 +40,33 @@ func runIntCode(code, input string) string {
 	return strings.TrimSpace(out.String())
 }
 
-func runAcs(code, phase, input string) string {
+func runAcs(phase string) string {
+	input := "0"
 	for _, p := range phase {
-		output := runIntCode(code, input+","+string(p))
+		output := runIntCode(programCode, input+","+string(p))
 		input = output
 	}
 	return input
+}
+
+func runAcs2(phase string) string {
+	var machineOutputs [5][]string
+
+	for i, p := range phase {
+		machineOutputs[i] = append(machineOutputs[i], string(p), "HaltOnFirstOutput")
+	}
+	machineOutputs[0] = append([]string{"0"}, machineOutputs[0]...)
+	for i := 0; i < 50; i++ {
+		output := runIntCode(programCode, strings.Join(machineOutputs[i%5], ","))
+		// If the same output is detected, it means that there is no new output.
+		if output == "" {
+			break
+		}
+		machineOutputs[(i+1)%5] = append([]string{output}, machineOutputs[(i+1)%5]...)
+
+	}
+	println(machineOutputs[0][0])
+	return machineOutputs[0][0]
 }
 
 func main() {
@@ -54,8 +75,12 @@ func main() {
 		panic(err)
 	}
 	programCode = string(data)
-	print(data)
-	input = "0"
-	perm("01234", 0)
+
+	maxThruster = 0
+	perm("01234", runAcs, 0)
 	fmt.Printf("Part 1: %d\n", maxThruster)
+
+	maxThruster = 0
+	perm("56789", runAcs2, 0)
+	fmt.Printf("Part 2: %d\n", maxThruster)
 }
