@@ -56,7 +56,7 @@ func runAcs2(phase string) string {
 		machineOutputs[i] = append(machineOutputs[i], string(p), "HaltOnFirstOutput")
 	}
 	machineOutputs[0] = append([]string{"0"}, machineOutputs[0]...)
-	for i := 0; i < 50; i++ {
+	for i := 0; ; i++ {
 		output := runIntCode(programCode, strings.Join(machineOutputs[i%5], ","))
 		// If the same output is detected, it means that there is no new output.
 		if output == "" {
@@ -65,16 +65,15 @@ func runAcs2(phase string) string {
 		machineOutputs[(i+1)%5] = append([]string{output}, machineOutputs[(i+1)%5]...)
 
 	}
-	println(machineOutputs[0][0])
 	return machineOutputs[0][0]
 }
 
-func main() {
+func day07() {
 	data, err := ioutil.ReadFile("d07.in")
 	if err != nil {
 		panic(err)
 	}
-	programCode = string(data)
+	programCode = strings.TrimSpace(string(data))
 
 	maxThruster = 0
 	perm("01234", runAcs, 0)
@@ -83,4 +82,19 @@ func main() {
 	maxThruster = 0
 	perm("56789", runAcs2, 0)
 	fmt.Printf("Part 2: %d\n", maxThruster)
+}
+
+func day05() {
+	data, err := ioutil.ReadFile("../day05/d05.in")
+	if err != nil {
+		panic(err)
+	}
+	programCode = strings.TrimSpace(string(data))
+
+	fmt.Printf("Part 1: %s\n", runIntCode(programCode, "1"))
+	fmt.Printf("Part 2: %s\n", runIntCode(programCode, "5"))
+}
+
+func main() {
+	day07()
 }
