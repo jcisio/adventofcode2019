@@ -47,7 +47,15 @@ function solve08(data) {
  */
 function printImage(image) {
   console.log('Part 2:')
+  var printPixel = function(c) {
+    var color = c == '0' ? '\x1b[44m' : '\x1b[43m';
+    return color + ' \x1b[40m';
+  }
   for (let i = 0; i < N; i++) {
-    console.log(image.slice(i*M, (i+1)*M).join(''))
+    var output = '';
+    for (let j = 0; j < M; j++) {
+      output += printPixel(image[i*M+j]);
+    }
+    console.log(output)
   }
 }
