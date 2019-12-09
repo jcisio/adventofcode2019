@@ -105,7 +105,9 @@ And it worked!
 
 ## Performance
 
-`d05.py` takes 57 ms to finish. `d07.go` takes 80 s on the same PC (Thinkpad x280 with i5-8250U) for two parts, and 76 s for part 2 only. It runs on 24 iterations, or `24*5 = 120` times the intCode machine. 630 ms in average to run the intCode, it is fairly slow. To compare apples to apples, I reuse the code to solve Day 5 with Go, it is only a few lines:
+`d05.py` takes 57 ms to finish. `d07.go` takes 80 s on the same PC (Thinkpad x280 with i5-8250U) for two parts, and 76 s for part 2 only. ~~It runs on 24 iterations, or `24*5 = 120` times the intCode machine. 630 ms in average to run the intCode, it is fairly slow~~.
+
+To compare apples to apples, I reuse the code to solve Day 5 with Go, it is only a few lines:
 
 ```Go
 	data, _ := ioutil.ReadFile("../day05/d05.in")
@@ -116,5 +118,7 @@ And it worked!
 ```
 
 I got 250 ms comparing to 57 ms with Python. So Go does have some extra overhead running external program. As I am a complete novice in Go, I won't go further for now.
+
+> **Update:** 120 is the number of permutations (`5!`) of `01234`, but for each permutation there are many iterations of 5 amplifiers, so the above calculation was wrong. I ran quickly `d07.go` again and measured 6720 calls of `runIntCode`, so actually it takes about 10 ms to run each intCode machine. Maybe Go is as fast as Python if the compilation time is taken into account. Compilation time overhead of Go is (non scientifically measured) 230 ms using my PC.
 
 One more thing: we don't care much about performance here, as we only need the result. However, if we needed to run *intCode* millions of times, there should be a way to *import* the Python module and use it, instead of running an external command. Another possiblity is to run intCode *as-a-service*, the overhead should be much less, even it is more than an imported module.
