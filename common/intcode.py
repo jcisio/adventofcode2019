@@ -24,7 +24,6 @@ def writeToPosition(mode, position, value):
   else:
     target_position = values[position] + relative_base
   values[target_position] = value
-  print('Write type', type(value), value)
 
 
 def runIntCode(input):
