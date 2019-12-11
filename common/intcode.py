@@ -1,7 +1,9 @@
-values = {}
-output = []
-relative_base = 0
-i = 0
+def init(new_values):
+  global values, output, relative_base, i
+  values = new_values
+  output = []
+  relative_base = 0
+  i = 0
 
 # Param position with mode 0, 1, 2
 def getParam(mode, position):
