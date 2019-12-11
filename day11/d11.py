@@ -41,6 +41,6 @@ for y in range(y2, y1-1, -1):
   line = []
   for x in range(x1, x2+1):
     color = points[(x,y)] if (x,y) in points else 0
-    line.append('x' if color else ' ')
+    line.append('⬛️' if color else '⬜️')
   print(''.join(line))
 
