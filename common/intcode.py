@@ -1,5 +1,9 @@
 def init(new_values):
   global values, output, relative_base, i
+
+  # Convert list to dict if necessary. We use dict for space efficiency.
+  if type(new_values) is list:
+    new_values = {i: int(new_values[i]) for i in range(len(new_values))}
   values = new_values
   output = []
   relative_base = 0
