@@ -20,18 +20,35 @@ while len(distance) < len(materials):
             continue
         distance[material] = max([distance[i] for i in recipes[material]['ingredients'].keys()]) + 1
 
-needed = {'FUEL': 1}
-while len(needed) > 1 or 'ORE' not in needed:
-    material = max(needed, key=lambda x: distance[x])
-    quantity = needed[material]
-    del needed[material]
-    if material == 'ORE':
-        needed[material] = quantity
-        continue
-    base_quantity, ingredients = recipes[material].values()
-    for a, b in ingredients.items():
-        if a not in needed:
-            needed[a] = 0
-        needed[a] += math.ceil(quantity/base_quantity)*b
 
-print('Part 1:', needed['ORE'])
+def required_ore(fuel):
+    global materials, recipes, distance
+    needed = {'FUEL': fuel}
+    while len(needed) > 1 or 'ORE' not in needed:
+        material = max(needed, key=lambda x: distance[x])
+        quantity = needed[material]
+        del needed[material]
+        if material == 'ORE':
+            needed[material] = quantity
+            continue
+        base_quantity, ingredients = recipes[material].values()
+        for a, b in ingredients.items():
+            if a not in needed:
+                needed[a] = 0
+            needed[a] += math.ceil(quantity/base_quantity)*b
+    return needed['ORE']
+
+def search_fuel_target(ore):
+    one_unit = required_ore(1)
+    target = ore//one_unit
+    used_ore = required_ore(target)
+    while True:
+        target += (ore-used_ore)//one_unit + 1
+        used_ore = required_ore(target)
+        if used_ore > ore:
+            break
+    return target - 1
+
+
+print('Part 1:', required_ore(1))
+print('Part 2:', search_fuel_target(1000000000000))
