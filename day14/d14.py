@@ -28,9 +28,6 @@ def required_ore(fuel):
         material = max(needed, key=lambda x: distance[x])
         quantity = needed[material]
         del needed[material]
-        if material == 'ORE':
-            needed[material] = quantity
-            continue
         base_quantity, ingredients = recipes[material].values()
         for a, b in ingredients.items():
             if a not in needed:
