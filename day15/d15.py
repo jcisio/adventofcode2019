@@ -1,4 +1,4 @@
-import sys, collections
+import sys, collections, time
 
 sys.path.append('../common')
 import intcode
@@ -34,20 +34,21 @@ def drawarea():
     x2 = max([p[0] for p in area])
     y1 = min([p[1] for p in area])
     y2 = max([p[1] for p in area])
-    for x in range(x1,x2+1):
-        for y in range(y1,y2+1):
-            if (x,y)==center:
-                c = 'x'
-            elif (x,y) in area:
-                c = area[(x,y)]
+    for y in range(y1,y2+1):
+        for x in range(x1,x2+1):
+            if (x,y) in area:
+                c = '⬜️' if area[(x,y)] == TYPE_EMPTY else '⬛️'
+                if (x,y)==center:
+                    c = 'xx'
+                elif area[(x,y)] == TYPE_OXYGEN:
+                    c = 'oo'
             else:
-                c = '?'
+                c = '  '
             print(c, end='')
         print()
 
-while True:
-    if not remains:
-        break
+p_oxygen = None
+while remains:
     p = remains.popleft()
     for m in moves:
         dst = getDestination(p, m)
@@ -59,10 +60,36 @@ while True:
         if area[dst]==TYPE_WALL:
             continue
         if area[dst]==TYPE_OXYGEN:
-            break
+            p_oxygen = dst
         remains.append(dst)
     else:
         continue
     break
 
-print('Part 1', len(path[dst]))
+print('Part 1', len(path[p_oxygen]))
+
+drawarea()
+
+# Part 2: fill from oxygen point.
+needed = [x for x in area if area[x] != TYPE_WALL]
+filled = collections.deque()
+remains.append(p_oxygen)
+filled.append(p_oxygen)
+step = 0
+while len(filled) < len(needed):
+    step += 1
+    borders = []
+    for p in remains:
+        for m in moves:
+            dst = getDestination(p, m)
+            if (dst not in filled) and (dst in area) and (area[dst] != TYPE_WALL):
+                borders.append(dst)
+                filled.append(dst)
+                print('\33[2J')
+                area[dst] = TYPE_OXYGEN
+                drawarea()
+                print(f'Step {step}: {len(filled)}/{len(needed)} remaining')
+                sys.stdout.flush()
+                time.sleep(0.1)
+    remains = collections.deque(borders)
+print('Part 2', step)
