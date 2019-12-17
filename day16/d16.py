@@ -3,16 +3,16 @@ with open('d16.in') as f:
 
 def get_output(input, iterations):
     L = len(input)
-    patterns = []
-    for i in range(1, L+1):
-        base = [0]*i + [1]*i +  [0]*i + [-1]*i
-        pattern = base.copy()[1:]
-        while len(pattern) < L:
-            pattern += base.copy()
-        patterns.append(pattern[:L])
+    base = [0, 1, 0, -1]
     input = list(map(int, input))
     for i in range(iterations):
-        input = [abs(sum([input[k]*patterns[j][k] for k in range(L)])) % 10 for j in range(L)]
+        input = [abs(sum([input[k]*base[(k+1)%(4*(j+1))//(j+1)] for k in range(L)])) % 10 for j in range(L)]
     return ''.join(map(str, input))
 
 print('Part 1:', get_output(input, 100)[0:8])
+
+input='03036732577212944063491565474664'
+input_p2 = input*10000
+ouput_p2 = get_output(input_p2, 100)
+offset = int(ouput_p2[0:7])
+print(ouput_p2[offset:offset+8])
