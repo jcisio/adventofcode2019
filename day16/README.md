@@ -111,4 +111,18 @@ And bingo, "That's the right answer!" However it is much slower than I think to 
 
 ## Without maths
 
-As I said above, I had another idea when I was doing the expansion. No maths at all, just compute. In the worst case, we will do `L/2*100*8 = 2.6*10^9` additions. It is much doable.
+As I said above, I had another idea when I was doing the expansion. No maths at all, just compute. ~~In the worst case, we will do -`L/2*100*8 = 2.6*10^9`- additions~~. It is much doable.
+
+It took me like 5 minutes to write this:
+```python
+    input = list(map(int, (input*N_REPEAT)[offset:]))
+    output = input.copy()
+    for i in range(N_ITERATION):
+        for j in range(len(input)):
+            output[j] = sum(input[j:]) % 10
+        input = output.copy()
+    return ''.join(map(str, output))
+```
+And it takes forever trying to finish the first iteration. When I look at the code, the complexity analyse above is wrong, it actually needs `100*(L/2)^2 = 10^15` additions to finish.
+
+Lesson learnt: *sometimes we can just let the computer do the computing, but sometimes maths is helpful to solve impossible computing problem*.

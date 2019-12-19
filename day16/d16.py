@@ -33,5 +33,22 @@ def part2(input):
     return ''.join(map(str, output))
 
 
-#print('Part 1:', get_output(input, N_ITERATION)[0:8])
+def part2_2(input):
+    L = len(input)*N_REPEAT
+    offset = int(input[0:7])
+    if (offset < L/2):
+        sys.exit('Oh my, I have no idea deal with that offset.')
+
+    input = list(map(int, (input*N_REPEAT)[offset:]))
+    output = input.copy()
+    for i in range(N_ITERATION):
+        print('Iteration', i, len(input))
+        for j in range(len(input)):
+            output[j] = sum(input[j:]) % 10
+        input = output.copy()
+    return ''.join(map(str, output))
+
+
+print('Part 1:', get_output(input, N_ITERATION)[0:8])
 print('Part 2:', part2(input))
+#print('Part 2:', part2_2(input))
