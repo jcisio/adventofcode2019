@@ -126,3 +126,15 @@ It took me like 5 minutes to write this:
 And it takes forever trying to finish the first iteration. When I look at the code, the complexity analyse above is wrong, it actually needs `100*(L/2)^2 = 10^15` additions to finish.
 
 Lesson learnt: *sometimes we can just let the computer do the computing, but sometimes maths is helpful to solve impossible computing problem*.
+
+PS: now I got two stars, I went take a look on subreddit, and found that my method above is far from optimized. Each iteration could be written as:
+```python
+    for _ in range(N_ITERATION):
+        output[-1] = input[-1]
+        for j in range(L2-2, -1, -1):
+            output[j] = (output[j+1] + input[j]) % 10
+        input = output.copy()
+```
+We reduced the complexity of each iteration from O(L^2) to O(L), and PyPy finished in 0.57s instead of 3.6s (but CPython is slower: 6.4s). We can see this trick is many place, to do sub array sum in O(1) (with O(L) preparation time) instead of O(L) without preparation.
+
+A user, bla2, cleverly [remarked](https://www.reddit.com/r/adventofcode/comments/ebxz7f/2019_day_16_part_2_visualization_and_hardmode/) that we can apply this trick to calculate the full message. The complexity per iteration is now O(LlogL) instead of O(L). With `L = 6.5*10^6` and 100 iteration, Python will be two slow and his C implementation finished in 50s.

@@ -40,15 +40,16 @@ def part2_2(input):
         sys.exit('Oh my, I have no idea deal with that offset.')
 
     input = list(map(int, (input*N_REPEAT)[offset:]))
-    output = input.copy()
-    for i in range(N_ITERATION):
-        print('Iteration', i, len(input))
-        for j in range(len(input)):
-            output[j] = sum(input[j:]) % 10
+    L2 = len(input)
+    output = [0]*L2
+    for _ in range(N_ITERATION):
+        output[-1] = input[-1]
+        for j in range(L2-2, -1, -1):
+            output[j] = (output[j+1] + input[j]) % 10
         input = output.copy()
-    return ''.join(map(str, output))
+    return ''.join(map(str, output))[0:8]
 
 
 print('Part 1:', get_output(input, N_ITERATION)[0:8])
 print('Part 2:', part2(input))
-#print('Part 2:', part2_2(input))
+print('Part 2:', part2_2(input))
